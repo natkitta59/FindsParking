@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ParkFinder — Design System</title>
+  <style>
+    :root {
+      --color-primary: #2563EB;
+      --color-primary-hover: #1D4ED8;
+      --color-navy: #172554;
+      --color-background: #FFFFFF;
+      --color-surface: #F8FAFC;
+      --color-surface-muted: #F3F4F6;
+      --color-border: #E2E8F0;
+      --color-text: #172554;
+      --color-text-secondary: #64748B;
+      --color-available: #22C55E;
+      --color-available-soft: #DCFCE7;
+      --color-occupied: #EF4444;
+      --color-occupied-soft: #FEE2E2;
+      --radius-sm: 8px;
+      --radius-md: 12px;
+      --radius-lg: 18px;
+      --radius-xl: 24px;
+      --shadow-card: 0 4px 18px rgba(15, 23, 42, .06);
+      --shadow-floating: 0 12px 32px rgba(15, 23, 42, .12);
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-8: 32px;
+      --space-10: 40px;
+      --space-12: 48px;
+      --font: "Noto Sans Thai", "Prompt", Tahoma, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--color-text);
+      background: #F1F5F9;
+      font-family: var(--font);
+      line-height: 1.55;
+    }
+    button, input { font: inherit; }
+    button { cursor: pointer; }
+    .app-shell { min-height: 100vh; }
+    .topbar {
+      position: sticky; top: 0; z-index: 10;
+      display: flex; align-items: center; justify-content: space-between;
+      gap: 20px; padding: 14px clamp(20px, 5vw, 64px);
+      color: white; background: var(--color-navy);
+      box-shadow: 0 2px 12px rgba(15,23,42,.16);
+    }
+    .brand { display: flex; align-items: center; gap: 12px; font-weight: 800; letter-spacing: -.03em; }
+    .brand-mark {
+      width: 38px; height: 38px; display: grid; place-items: center;
+      color: white; background: var(--color-primary); border-radius: 11px;
+      font-size: 19px; font-weight: 900;
+    }
+    .brand small { display: block; color: #CBD5E1; font-size: 11px; font-weight: 500; letter-spacing: .08em; }
+    .top-meta { color: #CBD5E1; font-size: 12px; }
+    .layout { display: grid; grid-template-columns: 248px minmax(0,1fr); max-width: 1500px; margin: auto; }
+    aside {
+      padding: 30px 20px; border-right: 1px solid var(--color-border);
+      background: #fff; min-height: calc(100vh - 66px);
+    }
+    .side-label { margin: 0 0 12px; color: #94A3B8; font-size: 10px; font-weight: 800; letter-spacing: .13em; }
+    .side-nav { display: grid; gap: 5px; margin-bottom: 28px; }
+    .side-nav a {
+      display: flex; align-items: center; gap: 10px; padding: 10px 12px;
+      border-radius: 9px; color: #475569; text-decoration: none; font-size: 13px;
+    }
+    .side-nav a:hover, .side-nav a.active { color: var(--color-primary); background: #EFF6FF; font-weight: 700; }
+    main { min-width: 0; padding: clamp(22px, 4vw, 52px); }
+    .page-heading { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-bottom: 30px; }
+    h1 { margin: 0; color: var(--color-navy); font-size: clamp(26px, 3vw, 36px); line-height: 1.2; letter-spacing: -.04em; }
+    .intro { margin: 8px 0 0; color: var(--color-text-secondary); font-size: 14px; }
+    .version { padding: 6px 10px; color: #1D4ED8; background: #DBEAFE; border-radius: 999px; font-size: 11px; font-weight: 800; white-space: nowrap; }
+    section { scroll-margin-top: 90px; margin-bottom: 38px; }
+    .section-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin-bottom: 15px; }
+    h2 { margin: 0; color: var(--color-navy); font-size: 19px; letter-spacing: -.02em; }
+    .section-note { color: var(--color-text-secondary); font-size: 12px; }
+    .panel {
+      padding: 22px; background: white; border: 1px solid var(--color-border);
+      border-radius: var(--radius-lg); box-shadow: var(--shadow-card);
+    }
+    .color-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 14px; }
+    .swatch { overflow: hidden; border: 1px solid var(--color-border); border-radius: 13px; background: white; }
+    .swatch-color { height: 86px; }
+    .swatch-info { padding: 11px 12px 13px; }
+    .swatch-name { color: #0F172A; font-size: 12px; font-weight: 800; }
+    .swatch-code { margin-top: 3px; color: var(--color-text-secondary); font: 11px/1.4 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .swatch-use { margin-top: 6px; color: #64748B; font-size: 10px; }
+    .status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .status-card { display: flex; align-items: center; gap: 14px; padding: 16px; border: 1px solid var(--color-border); border-radius: 13px; }
+    .status-dot { width: 46px; height: 46px; display: grid; place-items: center; flex: 0 0 auto; color: white; border-radius: 11px; font-size: 20px; font-weight: 900; }
+    .status-card strong { display: block; font-size: 14px; }
+    .status-card span { color: var(--color-text-secondary); font-size: 12px; }
+    .status-card.available .status-dot { background: var(--color-available); }
+    .status-card.occupied .status-dot { background: var(--color-occupied); }
+    .type-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+    .type-sample { padding: 15px; border: 1px solid var(--color-border); border-radius: 12px; background: #fff; }
+    .type-sample .eyebrow { color: var(--color-text-secondary); font-size: 10px; text-transform: uppercase; letter-spacing: .08em; }
+    .type-sample .sample { margin-top: 8px; color: var(--color-navy); font-weight: 800; }
+    .type-sample p { margin: 5px 0 0; color: var(--color-text-secondary); font-size: 11px; }
+    .heading-sample { font-size: 26px; letter-spacing: -.04em; }
+    .title-sample { font-size: 18px; }
+    .body-sample { font-size: 14px; font-weight: 500 !important; }
+    .caption-sample { font-size: 11px; font-weight: 500 !important; }
+    .component-grid { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 14px; }
+    .component-box { min-height: 145px; padding: 18px; border: 1px solid var(--color-border); border-radius: 14px; background: white; }
+    .component-title { margin-bottom: 14px; color: #64748B; font-size: 11px; font-weight: 800; }
+    .search {
+      display: flex; align-items: center; gap: 9px; padding: 12px 14px;
+      color: #94A3B8; background: #F8FAFC; border: 1px solid var(--color-border);
+      border-radius: 11px; font-size: 13px;
+    }
+    .btn { padding: 10px 16px; border: 0; border-radius: 10px; color: white; background: var(--color-primary); font-size: 12px; font-weight: 800; }
+    .btn.secondary { color: var(--color-navy); background: #EFF6FF; border: 1px solid #BFDBFE; }
+    .chips { display: flex; flex-wrap: wrap; gap: 7px; }
+    .chip { padding: 7px 11px; color: #475569; background: #F8FAFC; border: 1px solid var(--color-border); border-radius: 999px; font-size: 11px; }
+    .chip.active { color: #1D4ED8; background: #EFF6FF; border-color: #BFDBFE; font-weight: 800; }
+    .mall-card { display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 14px; border: 1px solid var(--color-border); border-radius: 12px; }
+    .mall-icon { width: 42px; height: 42px; display: grid; place-items: center; color: var(--color-primary); background: #EFF6FF; border-radius: 10px; font-size: 20px; }
+    .mall-name { font-size: 13px; font-weight: 800; }
+    .mall-sub { color: var(--color-text-secondary); font-size: 10px; }
+    .availability-number { color: var(--color-available); font-size: 21px; font-weight: 900; white-space: nowrap; }
+    .availability-number small { display: block; color: var(--color-text-secondary); font-size: 10px; font-weight: 500; text-align: right; }
+    .progress { overflow: hidden; height: 7px; margin-top: 10px; background: #E2E8F0; border-radius: 99px; }
+    .progress span { display: block; width: 42%; height: 100%; background: var(--color-available); border-radius: inherit; }
+    .floor-row { display: flex; align-items: center; gap: 8px; }
+    .floor { min-width: 43px; padding: 9px 12px; color: #475569; background: #F8FAFC; border: 1px solid var(--color-border); border-radius: 9px; font-size: 12px; font-weight: 800; text-align: center; }
+    .floor.active { color: white; background: var(--color-primary); border-color: var(--color-primary); }
+    .parking-demo { padding: 18px; color: white; background: #17212F; border-radius: 14px; }
+    .parking-road { margin: 12px 0; padding: 8px; color: #94A3B8; border-top: 1px dashed #64748B; border-bottom: 1px dashed #64748B; font-size: 10px; text-align: center; letter-spacing: .12em; }
+    .parking-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
+    .bay { min-height: 76px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; border: 1px solid rgba(255,255,255,.16); border-radius: 7px; font-size: 10px; font-weight: 800; }
+    .bay.available { color: #052E16; background: var(--color-available); }
+    .bay.occupied { color: white; background: var(--color-occupied); }
+    .car { font-size: 24px; line-height: 1; }
+    .bay small { font-size: 9px; opacity: .85; }
+    .map-legend { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 12px; color: #CBD5E1; font-size: 11px; }
+    .legend-item { display: flex; align-items: center; gap: 7px; }
+    .legend-color { width: 10px; height: 10px; border-radius: 3px; }
+    .spacing-list { display: grid; gap: 12px; }
+    .space-row { display: flex; align-items: center; gap: 12px; }
+    .space-bar { height: 12px; background: #DBEAFE; border-radius: 4px; }
+    .space-row code { width: 75px; color: #475569; font-size: 11px; }
+    .space-row span { color: #64748B; font-size: 11px; }
+    .radius-grid { display: flex; flex-wrap: wrap; align-items: end; gap: 20px; }
+    .radius-item { display: grid; justify-items: center; gap: 8px; color: #64748B; font-size: 11px; }
+    .radius-box { width: 64px; height: 52px; background: #EFF6FF; border: 1px solid #BFDBFE; }
+    .note { padding: 14px 16px; color: #475569; background: #F8FAFC; border-left: 3px solid var(--color-primary); border-radius: 8px; font-size: 12px; }
+    footer { padding: 20px 0 4px; color: #94A3B8; font-size: 11px; text-align: center; }
+    @media (max-width: 1000px) {
+      .layout { grid-template-columns: 1fr; }
+      aside { display: none; }
+      .color-grid { grid-template-columns: repeat(3,1fr); }
+    }
+    @media (max-width: 650px) {
+      .topbar { padding: 12px 17px; }
+      .top-meta { display: none; }
+      main { padding: 24px 16px; }
+      .page-heading { align-items: flex-start; flex-direction: column; }
+      .color-grid { grid-template-columns: repeat(2,1fr); }
+      .type-grid, .component-grid { grid-template-columns: 1fr 1fr; }
+      .panel { padding: 15px; }
+      .status-grid { grid-template-columns: 1fr; }
+      .parking-demo { padding: 12px; }
+      .bay { min-height: 65px; }
+    }
+  </style>
+</head>
+<body>
+<div class="app-shell">
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">P</div>
+      <div>ParkFinder <small>DESIGN SYSTEM</small></div>
+    </div>
+    <div class="top-meta">UI foundations · Components · Parking map</div>
+  </header>
+
+  <div class="layout">
+    <aside>
+      <p class="side-label">FOUNDATIONS</p>
+      <nav class="side-nav">
+        <a class="active" href="#overview">◈ ภาพรวม</a>
+        <a href="#colors">▦ ชุดสี</a>
+        <a href="#typography">T ตัวอักษร</a>
+        <a href="#spacing">↔ ระยะห่าง</a>
+        <a href="#radius">▢ มุมโค้ง</a>
+      </nav>
+      <p class="side-label">COMPONENTS</p>
+      <nav class="side-nav">
+        <a href="#status">● สถานะที่จอด</a>
+        <a href="#components">▤ UI Components</a>
+        <a href="#parking-map">⌗ Parking Map</a>
+      </nav>
+    </aside>
+
+    <main>
+      <div class="page-heading" id="overview">
+        <div>
+          <h1>ParkFinder Design System</h1>
+          <p class="intro">ชุดมาตรฐานสี ตัวอักษร ระยะห่าง และคอมโพเนนต์สำหรับแอปค้นหาที่จอดรถ</p>
+        </div>
+        <span class="version">VERSION 1.0</span>
+      </div>
+
+      <section id="colors">
+        <div class="section-head">
+          <h2>01. Color Palette</h2>
+          <span class="section-note">สีหลักที่อ้างอิงจาก UI ของ ParkFinder</span>
+        </div>
+        <div class="panel">
+          <div class="color-grid">
+            <div class="swatch"><div class="swatch-color" style="background:#2563EB"></div><div class="swatch-info"><div class="swatch-name">Primary Blue</div><div class="swatch-code">#2563EB</div><div class="swatch-use">ปุ่มหลัก / Navigation</div></div></div>
+            <div class="swatch"><div class="swatch-color" style="background:#172554"></div><div class="swatch-info"><div class="swatch-name">Dark Navy</div><div class="swatch-code">#172554</div><div class="swatch-use">หัวข้อ / ตัวอักษรหลัก</div></div></div>
+            <div class="swatch"><div class="swatch-color" style="background:#FFFFFF"></div><div class="swatch-info"><div class="swatch-name">White</div><div class="swatch-code">#FFFFFF</div><div class="swatch-use">พื้นหลังหลัก</div></div></div>
+            <div class="swatch"><div class="swatch-color" style="background:#F3F4F6"></div><div class="swatch-info"><div class="swatch-name">Light Gray</div><div class="swatch-code">#F3F4F6</div><div class="swatch-use">พื้นหลังรอง / การ์ด</div></div></div>
+            <div class="swatch"><div class="swatch-color" style="background:#64748B"></div><div class="swatch-info"><div class="swatch-name">Secondary Text</div><div class="swatch-code">#64748B</div><div class="swatch-use">คำอธิบาย / ข้อมูลรอง</div></div></div>
+            <div class="swatch"><div class="swatch-color" style="background:#E2E8F0"></div><div class="swatch-info"><div class="swatch-name">Border</div><div class="swatch-code">#E2E8F0</div><div class="swatch-use">เส้นขอบ / Divider</div></div></div>
+            <div class="swatch"><div class="swatch-color" style="background:#22C55E"></div><div class="swatch-info"><div class="swatch-name">Available Green</div><div class="swatch-code">#22C55E</div><div class="swatch-use">ช่องจอดว่างเท่านั้น</div></div></div>
+            <div class="swatch"><div class="swatch-color" style="background:#EF4444"></div><div class="swatch-info"><div class="swatch-name">Occupied Red</div><div class="swatch-code">#EF4444</div><div class="swatch-use">ช่องจอดที่มีรถเท่านั้น</div></div></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="status">
+        <div class="section-head"><h2>02. Parking Status</h2><span class="section-note">ใช้สีสถานะเพียง 2 สีเท่านั้น</span></div>
+        <div class="panel">
+          <div class="status-grid">
+            <div class="status-card available"><div class="status-dot">✓</div><div><strong>ว่าง · Available</strong><span>#22C55E · ไม่มีรถจอดในช่อง</span></div></div>
+            <div class="status-card occupied"><div class="status-dot">▰</div><div><strong>ไม่ว่าง · Occupied</strong><span>#EF4444 · มีรถจอดในช่อง</span></div></div>
+          </div>
+          <div class="note" style="margin-top:16px">ข้อกำหนด: ช่องสีเขียวต้องไม่มีรูปรถ ส่วนช่องสีแดงต้องแสดงรูปรถมุมมองด้านบนให้เห็นชัดเจน ห้ามใช้สีเหลืองหรือสีอื่นแทนสถานะที่จอด</div>
+        </div>
+      </section>
+
+      <section id="typography">
+        <div class="section-head"><h2>03. Typography</h2><span class="section-note">แนะนำ Prompt / Noto Sans Thai</span></div>
+        <div class="panel">
+          <div class="type-grid">
+            <div class="type-sample"><div class="eyebrow">Display / 26px</div><div class="sample heading-sample">428</div><p>ตัวเลขที่จอดว่าง</p></div>
+            <div class="type-sample"><div class="eyebrow">Heading / 18px</div><div class="sample title-sample">เลือกห้าง</div><p>หัวข้อของแต่ละส่วน</p></div>
+            <div class="type-sample"><div class="eyebrow">Body / 14px</div><div class="sample body-sample">จำนวนที่จอดรถทั้งหมด</div><p>ข้อความทั่วไป</p></div>
+            <div class="type-sample"><div class="eyebrow">Caption / 11px</div><div class="sample caption-sample">อัปเดตล่าสุด 10:42 น.</div><p>คำอธิบายและเวลา</p></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="spacing">
+        <div class="section-head"><h2>04. Spacing Scale</h2><span class="section-note">ระบบระยะห่าง 4px base unit</span></div>
+        <div class="panel">
+          <div class="spacing-list">
+            <div class="space-row"><code>4 px · XS</code><div class="space-bar" style="width:16px"></div><span>ระยะชิด / icon gap</span></div>
+            <div class="space-row"><code>8 px · SM</code><div class="space-bar" style="width:32px"></div><span>ระหว่าง label</span></div>
+            <div class="space-row"><code>12 px · MD</code><div class="space-bar" style="width:48px"></div><span>padding ภายใน control</span></div>
+            <div class="space-row"><code>16 px · LG</code><div class="space-bar" style="width:64px"></div><span>padding การ์ด</span></div>
+            <div class="space-row"><code>24 px · XL</code><div class="space-bar" style="width:96px"></div><span>ระหว่างกลุ่มข้อมูล</span></div>
+            <div class="space-row"><code>32 px · 2XL</code><div class="space-bar" style="width:128px"></div><span>ระหว่าง section</span></div>
+          </div>
+        </div>
+      </section>
+
+      <section id="radius">
+        <div class="section-head"><h2>05. Border Radius & Elevation</h2><span class="section-note">มุมโค้งนุ่มนวล ไม่ดูเป็นการ์ตูน</span></div>
+        <div class="panel">
+          <div class="radius-grid">
+            <div class="radius-item"><div class="radius-box" style="border-radius:8px"></div>Small · 8px</div>
+            <div class="radius-item"><div class="radius-box" style="border-radius:12px"></div>Medium · 12px</div>
+            <div class="radius-item"><div class="radius-box" style="border-radius:18px"></div>Large · 18px</div>
+            <div class="radius-item"><div class="radius-box" style="border-radius:24px"></div>XL · 24px</div>
+          </div>
+          <p class="intro" style="margin-top:20px">ใช้เส้นขอบสี #E2E8F0 เป็นหลัก เงาการ์ดบางและนุ่ม หลีกเลี่ยงเงาหนักหรือเอฟเฟกต์เรืองแสง</p>
+        </div>
+      </section>
+
+      <section id="components">
+        <div class="section-head"><h2>06. UI Components</h2><span class="section-note">ตัวอย่างคอมโพเนนต์หลัก</span></div>
+        <div class="component-grid">
+          <div class="component-box"><div class="component-title">SEARCH FIELD</div><div class="search">⌕ <span>ค้นหาห้างสรรพสินค้า</span></div></div>
+          <div class="component-box"><div class="component-title">BUTTONS</div><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn">ดูแผนที่</button><button class="btn secondary">เลือกชั้น</button></div></div>
+          <div class="component-box"><div class="component-title">FILTER CHIPS</div><div class="chips"><span class="chip active">ทั้งหมด</span><span class="chip">จุดชาร์จ EV</span><span class="chip">ผู้พิการ</span></div></div>
+          <div class="component-box"><div class="component-title">FLOOR SELECTOR</div><div class="floor-row"><span class="floor">B2</span><span class="floor active">B1</span><span class="floor">G</span><span class="floor">1F</span></div></div>
+          <div class="component-box" style="grid-column:1/-1"><div class="component-title">MALL CARD</div><div class="mall-card"><div style="display:flex;align-items:center;gap:12px"><div class="mall-icon">⌂</div><div><div class="mall-name">Siam Paragon</div><div class="mall-sub">ระยะทาง 1.2 กม. · ทั้งหมด 3,000 ช่อง</div></div></div><div class="availability-number">428<small>ที่จอดว่าง</small></div></div><div class="progress"><span></span></div></div>
+        </div>
+      </section>
+
+      <section id="parking-map">
+        <div class="section-head"><h2>07. Parking Map Pattern</h2><span class="section-note">Top-down · View-only</span></div>
+        <div class="panel">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;flex-wrap:wrap">
+            <div><strong style="font-size:14px">Siam Paragon · ชั้น B2</strong><div class="mall-sub">ตัวอย่างการแสดงสถานะช่องจอด</div></div>
+            <div class="floor-row"><span class="floor active">B2</span><span class="floor">B1</span><span class="floor">G</span></div>
+          </div>
+          <div class="parking-demo">
+            <div style="display:flex;justify-content:space-between;gap:12px;font-size:11px"><span>ZONE A</span><span>ทางเดินรถ ↔</span></div>
+            <div class="parking-row" style="margin-top:12px">
+              <div class="bay available">A01<small>ว่าง</small></div>
+              <div class="bay occupied"><span class="car">🚗</span>A02</div>
+              <div class="bay available">A03<small>ว่าง</small></div>
+              <div class="bay occupied"><span class="car">🚙</span>A04</div>
+            </div>
+            <div class="parking-road">← ทางเดินรถ / DRIVE AISLE →</div>
+            <div class="parking-row">
+              <div class="bay occupied"><span class="car">🚗</span>B01</div>
+              <div class="bay available">B02<small>ว่าง</small></div>
+              <div class="bay occupied"><span class="car">🚙</span>B03</div>
+              <div class="bay available">B04<small>ว่าง</small></div>
+            </div>
+            <div class="map-legend"><span class="legend-item"><i class="legend-color" style="background:#22C55E"></i>ว่าง · ไม่มีรถ</span><span class="legend-item"><i class="legend-color" style="background:#EF4444"></i>ไม่ว่าง · มีรถ</span></div>
+          </div>
+          <div class="note" style="margin-top:14px">แผนผังนี้เป็นตัวอย่างการแสดงผลเท่านั้น ช่องจอดทุกช่องเป็น View-only ไม่สามารถกดเลือกหรือจองได้</div>
+        </div>
+      </section>
+
+      <footer>ParkFinder Design System · Minimal / Modern / Clear · UI reference v1.0</footer>
+    </main>
+  </div>
+</div>
+</body>
+</html>

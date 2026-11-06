@@ -1,0 +1,1154 @@
+<!doctype html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>ParkFinder</title>
+
+    <style>
+      :root {
+        --primary: #1557e8;
+        --dark: #172b59;
+        --green: #16b86a;
+        --red: #e54855;
+        --bg: #f5f6fc;
+        --white: #ffffff;
+        --text: #192440;
+        --muted: #8290aa;
+        --border: #e7eaf3;
+        --radius: 16px;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+      }
+
+      button,
+      input {
+        font: inherit;
+      }
+
+      button {
+        cursor: pointer;
+      }
+
+      /* HEADER */
+
+      .header {
+        height: 70px;
+        background: white;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 5%;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        color: var(--dark);
+        font-size: 20px;
+        font-weight: 800;
+      }
+
+      .logo-icon {
+        width: 38px;
+        height: 38px;
+        background: var(--primary);
+        color: white;
+        border-radius: 11px;
+        display: grid;
+        place-items: center;
+      }
+
+      .status {
+        color: #13864c;
+        background: #eaf9f0;
+        padding: 9px 14px;
+        border-radius: 30px;
+        font-size: 12px;
+      }
+
+      /* LAYOUT */
+
+      .layout {
+        max-width: 1350px;
+        margin: auto;
+        padding: 30px;
+        display: grid;
+        grid-template-columns: 220px 1fr;
+        gap: 25px;
+      }
+
+      .sidebar {
+        background: white;
+        border-radius: var(--radius);
+        padding: 15px;
+        height: fit-content;
+        position: sticky;
+        top: 95px;
+      }
+
+      .menu {
+        width: 100%;
+        border: none;
+        background: transparent;
+        color: #71809a;
+        padding: 14px;
+        text-align: left;
+        border-radius: 11px;
+        margin-bottom: 5px;
+        font-weight: 600;
+      }
+
+      .menu.active,
+      .menu:hover {
+        background: #eaf0ff;
+        color: var(--primary);
+      }
+
+      main {
+        min-width: 0;
+      }
+
+      .page {
+        display: none;
+      }
+
+      .page.active {
+        display: block;
+      }
+
+      h1 {
+        font-size: 27px;
+        color: var(--dark);
+        margin: 8px 0;
+      }
+
+      .subtitle {
+        color: var(--muted);
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      .eyebrow {
+        color: var(--primary);
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 1px;
+      }
+
+      /* SEARCH */
+
+      .search {
+        margin-top: 20px;
+        width: 100%;
+        max-width: 500px;
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 14px 16px;
+        outline: none;
+      }
+
+      .search:focus {
+        border-color: var(--primary);
+      }
+
+      /* FILTER */
+
+      .filters {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 18px 0;
+      }
+
+      .filter {
+        border: 1px solid var(--border);
+        background: white;
+        color: #65718b;
+        padding: 9px 15px;
+        border-radius: 30px;
+        font-size: 12px;
+      }
+
+      .filter.active {
+        background: #eaf0ff;
+        border-color: #cbd9ff;
+        color: var(--primary);
+      }
+
+      /* MALL CARDS */
+
+      .section-title {
+        margin: 25px 0 15px;
+        color: var(--dark);
+        font-size: 16px;
+      }
+
+      .mall-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+      }
+
+      .mall-card {
+        background: white;
+        padding: 20px;
+        border-radius: var(--radius);
+        border: 1px solid var(--border);
+        box-shadow: 0 5px 20px #172b5908;
+      }
+
+      .mall-header {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      }
+
+      .mall-logo {
+        width: 45px;
+        height: 45px;
+        border-radius: 12px;
+        background: #edf0ff;
+        color: var(--primary);
+        display: grid;
+        place-items: center;
+        font-weight: 900;
+      }
+
+      .mall-name {
+        font-weight: 800;
+        color: var(--dark);
+      }
+
+      .mall-location {
+        color: var(--muted);
+        font-size: 11px;
+        margin-top: 5px;
+      }
+
+      .available {
+        margin-top: 22px;
+        display: flex;
+        justify-content: space-between;
+        align-items: end;
+      }
+
+      .available strong {
+        color: var(--green);
+        font-size: 29px;
+      }
+
+      .available small {
+        color: var(--muted);
+        font-size: 11px;
+      }
+
+      .progress {
+        height: 7px;
+        background: #ffe5e7;
+        border-radius: 20px;
+        margin-top: 12px;
+        overflow: hidden;
+      }
+
+      .progress span {
+        display: block;
+        height: 100%;
+        background: var(--green);
+        border-radius: 20px;
+      }
+
+      .card-footer {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: 16px;
+        gap: 8px;
+      }
+
+      .tag {
+        font-size: 10px;
+        padding: 5px 8px;
+        background: #f0f2f8;
+        border-radius: 6px;
+        color: #687590;
+      }
+
+      .primary-btn {
+        background: var(--primary);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        padding: 11px 16px;
+        font-weight: 700;
+        font-size: 12px;
+      }
+
+      .primary-btn:hover {
+        background: #0c43c1;
+      }
+
+      /* STATISTICS */
+
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        margin: 22px 0;
+      }
+
+      .stat-card {
+        background: white;
+        padding: 17px;
+        border-radius: 14px;
+        border: 1px solid var(--border);
+      }
+
+      .stat-card small {
+        color: var(--muted);
+      }
+
+      .stat-card strong {
+        display: block;
+        font-size: 25px;
+        margin-top: 8px;
+      }
+
+      .stat-card.green strong {
+        color: var(--green);
+      }
+
+      .stat-card.red strong {
+        color: var(--red);
+      }
+
+      .stat-card.blue strong {
+        color: var(--primary);
+      }
+
+      /* FLOOR LIST */
+
+      .floor-list {
+        display: grid;
+        gap: 12px;
+      }
+
+      .floor-row {
+        background: white;
+        border: 1px solid var(--border);
+        padding: 15px;
+        border-radius: 13px;
+        display: grid;
+        grid-template-columns: 50px 1fr auto auto;
+        gap: 13px;
+        align-items: center;
+      }
+
+      .floor-code {
+        width: 42px;
+        height: 42px;
+        background: #edf0ff;
+        color: var(--primary);
+        border-radius: 11px;
+        display: grid;
+        place-items: center;
+        font-weight: 900;
+      }
+
+      .floor-row strong {
+        font-size: 13px;
+      }
+
+      .floor-row small {
+        display: block;
+        color: var(--muted);
+        font-size: 10px;
+        margin-top: 5px;
+      }
+
+      .floor-number {
+        color: var(--green);
+        font-weight: 900;
+        font-size: 19px;
+      }
+
+      /* PARKING MAP */
+
+      .map-toolbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 12px;
+        margin: 20px 0;
+      }
+
+      .floor-buttons {
+        display: flex;
+        gap: 5px;
+        background: #e9edff;
+        padding: 4px;
+        border-radius: 10px;
+      }
+
+      .floor-buttons button {
+        border: none;
+        background: transparent;
+        padding: 9px 13px;
+        border-radius: 8px;
+        color: #687590;
+        font-size: 11px;
+        font-weight: 700;
+      }
+
+      .floor-buttons button.active {
+        background: var(--primary);
+        color: white;
+      }
+
+      .legend {
+        display: flex;
+        gap: 15px;
+        font-size: 11px;
+        color: #65718b;
+      }
+
+      .legend i {
+        width: 10px;
+        height: 10px;
+        display: inline-block;
+        border-radius: 3px;
+        margin-right: 5px;
+      }
+
+      .legend .free {
+        background: var(--green);
+      }
+
+      .legend .busy {
+        background: var(--red);
+      }
+
+      .map-summary {
+        background: #edf1ff;
+        border-radius: 12px;
+        padding: 15px;
+        display: flex;
+        gap: 30px;
+        margin-bottom: 15px;
+      }
+
+      .map-summary strong {
+        font-size: 21px;
+        color: var(--green);
+      }
+
+      .map-summary small {
+        display: block;
+        color: var(--muted);
+        font-size: 10px;
+      }
+
+      .map-container {
+        background: #f0f2f8;
+        border: 1px solid var(--border);
+        padding: 15px;
+        border-radius: 16px;
+      }
+
+      .map-zone {
+        background: white;
+        padding: 13px;
+        border-radius: 12px;
+        margin-bottom: 12px;
+      }
+
+      .zone-title {
+        font-size: 11px;
+        font-weight: 800;
+        color: #65718b;
+        margin-bottom: 12px;
+      }
+
+      .slots {
+        display: grid;
+        grid-template-columns: repeat(8, 1fr);
+        gap: 7px;
+      }
+
+      .slot {
+        height: 65px;
+        border-radius: 8px;
+        border: 1px solid #b7e8ca;
+        background: #e5f7ec;
+        color: #12874b;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 3px;
+        font-size: 9px;
+        font-weight: 800;
+      }
+
+      .slot.occupied {
+        background: #ffeaec;
+        border-color: #f1c3c8;
+        color: #d63d4b;
+      }
+
+      .slot .car {
+        font-size: 19px;
+      }
+
+      .drive-lane {
+        height: 40px;
+        background: #e3e7f0;
+        border: 1px dashed #c5ccdc;
+        border-radius: 8px;
+        display: grid;
+        place-items: center;
+        color: #7b879e;
+        font-size: 10px;
+        margin: 10px 0;
+      }
+
+      .facilities {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        flex-wrap: wrap;
+        margin-bottom: 13px;
+      }
+
+      .facility {
+        padding: 9px 13px;
+        border-radius: 8px;
+        background: #e8edff;
+        color: #3157b8;
+        font-size: 10px;
+        font-weight: 700;
+      }
+
+      .note {
+        background: #edf1ff;
+        color: #58688e;
+        padding: 13px;
+        border-radius: 10px;
+        margin-top: 15px;
+        font-size: 11px;
+        line-height: 1.7;
+      }
+
+      /* SYSTEM STATES */
+
+      .state-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 13px;
+      }
+
+      .state-card {
+        background: white;
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 18px;
+      }
+
+      .state-card h3 {
+        font-size: 14px;
+        margin-bottom: 8px;
+      }
+
+      .state-card p {
+        font-size: 11px;
+        color: var(--muted);
+        line-height: 1.6;
+        margin-bottom: 13px;
+      }
+
+      /* MOBILE NAV */
+
+      .mobile-nav {
+        display: none;
+      }
+
+      @media (max-width: 900px) {
+        .layout {
+          display: block;
+          padding: 22px;
+        }
+
+        .sidebar {
+          display: none;
+        }
+
+        .mobile-nav {
+          display: flex;
+          position: fixed;
+          bottom: 0;
+          left: 0;
+          right: 0;
+          background: white;
+          border-top: 1px solid var(--border);
+          justify-content: space-around;
+          padding: 12px 5px;
+          z-index: 20;
+        }
+
+        .mobile-nav button {
+          border: none;
+          background: transparent;
+          color: #7c88a0;
+          font-size: 10px;
+          font-weight: 700;
+        }
+
+        .mobile-nav button.active {
+          color: var(--primary);
+        }
+      }
+
+      @media (max-width: 600px) {
+        .header {
+          height: 60px;
+          padding: 0 15px;
+        }
+
+        .logo {
+          font-size: 16px;
+        }
+
+        .layout {
+          padding: 20px 13px 90px;
+        }
+
+        h1 {
+          font-size: 23px;
+        }
+
+        .mall-grid,
+        .state-grid {
+          grid-template-columns: 1fr;
+        }
+
+        .stats {
+          gap: 7px;
+        }
+
+        .stat-card {
+          padding: 11px;
+        }
+
+        .stat-card strong {
+          font-size: 19px;
+        }
+
+        .floor-row {
+          grid-template-columns: 40px 1fr auto;
+        }
+
+        .floor-row .primary-btn {
+          grid-column: 2 / 4;
+        }
+
+        .slots {
+          grid-template-columns: repeat(4, 1fr);
+        }
+
+        .slot {
+          height: 57px;
+        }
+
+        .map-summary {
+          gap: 15px;
+        }
+
+        .floor-buttons button {
+          padding: 8px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <header class="header">
+      <div class="logo">
+        <div class="logo-icon">P</div>
+        ParkFinder
+      </div>
+      <div class="status">● ระบบเซ็นเซอร์ทำงานปกติ</div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar">
+        <button class="menu active" data-page="home">⌂ &nbsp; ภาพรวม</button>
+        <button class="menu" data-page="mall">▦ &nbsp; ข้อมูลห้าง</button>
+        <button class="menu" data-page="map">▤ &nbsp; แผนผังที่จอดรถ</button>
+        <button class="menu" data-page="system">◉ &nbsp; สถานะระบบ</button>
+      </aside>
+
+      <main>
+        <!-- HOME -->
+        <section class="page active" id="home">
+          <div class="eyebrow">PARKING OVERVIEW</div>
+          <h1>ค้นหาที่จอดรถ</h1>
+          <p class="subtitle">
+            ตรวจสอบจำนวนที่จอดว่างในห้างสรรพสินค้าได้ง่าย ๆ
+          </p>
+
+          <input
+            class="search"
+            id="search"
+            placeholder="⌕  ค้นหาห้างสรรพสินค้า..."
+          />
+
+          <div class="filters">
+            <button class="filter active" data-filter="all">ทั้งหมด</button>
+            <button class="filter" data-filter="many">ที่จอดว่างเยอะ</button>
+            <button class="filter" data-filter="ev">มีจุดชาร์จ EV</button>
+          </div>
+
+          <h2 class="section-title">ห้างสรรพสินค้า</h2>
+
+          <div class="mall-grid" id="mallGrid">
+            <article class="mall-card" data-name="สยามพารากอน" data-free="428">
+              <div class="mall-header">
+                <div class="mall-logo">SP</div>
+                <div>
+                  <div class="mall-name">สยามพารากอน</div>
+                  <div class="mall-location">ปทุมวัน · กรุงเทพฯ</div>
+                </div>
+              </div>
+
+              <div class="available">
+                <div><strong>428</strong> <small>ช่องว่าง</small></div>
+                <small>2,572 / 3,000 ไม่ว่าง</small>
+              </div>
+
+              <div class="progress"><span style="width: 14.3%"></span></div>
+
+              <div class="card-footer">
+                <div class="tag">B2 · B1 · 1F · EV</div>
+                <button class="primary-btn" onclick="go('mall')">
+                  ดูรายละเอียด →
+                </button>
+              </div>
+            </article>
+
+            <article
+              class="mall-card"
+              data-name="เซ็นทรัลเวิลด์"
+              data-free="186"
+            >
+              <div class="mall-header">
+                <div class="mall-logo">CW</div>
+                <div>
+                  <div class="mall-name">เซ็นทรัลเวิลด์</div>
+                  <div class="mall-location">ราชประสงค์ · กรุงเทพฯ</div>
+                </div>
+              </div>
+
+              <div class="available">
+                <div><strong>186</strong> <small>ช่องว่าง</small></div>
+                <small>1,814 / 2,000 ไม่ว่าง</small>
+              </div>
+
+              <div class="progress"><span style="width: 9.3%"></span></div>
+
+              <div class="card-footer">
+                <div class="tag">B1 · B2 · 1F · EV</div>
+                <button class="primary-btn" onclick="go('mall')">
+                  ดูรายละเอียด →
+                </button>
+              </div>
+            </article>
+
+            <article class="mall-card" data-name="ไอคอนสยาม" data-free="890">
+              <div class="mall-header">
+                <div class="mall-logo">IS</div>
+                <div>
+                  <div class="mall-name">ไอคอนสยาม</div>
+                  <div class="mall-location">คลองสาน · กรุงเทพฯ</div>
+                </div>
+              </div>
+
+              <div class="available">
+                <div><strong>890</strong> <small>ช่องว่าง</small></div>
+                <small>1,110 / 2,000 ไม่ว่าง</small>
+              </div>
+
+              <div class="progress"><span style="width: 44.5%"></span></div>
+
+              <div class="card-footer">
+                <div class="tag">B1 · G · 1F · EV</div>
+                <button class="primary-btn" onclick="go('mall')">
+                  ดูรายละเอียด →
+                </button>
+              </div>
+            </article>
+          </div>
+
+          <div class="note">
+            ข้อมูลตัวเลขใน Prototype เป็นข้อมูลตัวอย่างสำหรับแสดงหน้าตาการใช้งาน
+          </div>
+        </section>
+
+        <!-- MALL DETAILS -->
+        <section class="page" id="mall">
+          <button class="filter" onclick="go('home')">← กลับหน้าหลัก</button>
+
+          <div class="eyebrow" style="margin-top: 20px">MALL DETAILS</div>
+          <h1>สยามพารากอน</h1>
+          <p class="subtitle">Siam Paragon · ปทุมวัน กรุงเทพมหานคร</p>
+
+          <div class="stats">
+            <div class="stat-card green">
+              <small>ที่จอดว่าง</small>
+              <strong>428</strong>
+            </div>
+
+            <div class="stat-card red">
+              <small>มีรถจอด</small>
+              <strong>2,572</strong>
+            </div>
+
+            <div class="stat-card blue">
+              <small>ทั้งหมด</small>
+              <strong>3,000</strong>
+            </div>
+          </div>
+
+          <h2 class="section-title">เลือกชั้นที่ต้องการดู</h2>
+
+          <div class="floor-list" id="floorList"></div>
+        </section>
+
+        <!-- PARKING MAP -->
+        <section class="page" id="map">
+          <button class="filter" onclick="go('mall')">← กลับข้อมูลห้าง</button>
+
+          <div class="eyebrow" style="margin-top: 20px">PARKING FLOOR MAP</div>
+          <h1>แผนผังที่จอดรถ <span id="floorTitle">B2</span></h1>
+          <p class="subtitle">สยามพารากอน · แสดงสถานะช่องจอดจากเซ็นเซอร์</p>
+
+          <div class="map-toolbar">
+            <div class="floor-buttons">
+              <button class="active" onclick="setFloor('B2', this)">B2</button>
+              <button onclick="setFloor('B1', this)">B1</button>
+              <button onclick="setFloor('1F', this)">1F</button>
+              <button onclick="setFloor('2F', this)">2F</button>
+              <button onclick="setFloor('G', this)">G</button>
+            </div>
+
+            <div class="legend">
+              <span><i class="free"></i>ว่าง</span>
+              <span><i class="busy"></i>มีรถ</span>
+            </div>
+          </div>
+
+          <div class="map-summary">
+            <div>
+              <strong id="freeCount">182</strong><small>ช่องว่าง</small>
+            </div>
+            <div>
+              <strong id="busyCount" style="color: var(--red)">468</strong
+              ><small>มีรถจอด</small>
+            </div>
+            <div>
+              <strong id="totalCount" style="color: var(--dark)">650</strong
+              ><small>ทั้งหมด</small>
+            </div>
+          </div>
+
+          <div class="map-container">
+            <div class="facilities">
+              <div class="facility">↑ ทางเข้า</div>
+              <div class="facility">ลิฟต์โดยสาร</div>
+              <div class="facility">บันไดหนีไฟ</div>
+              <div class="facility">ทางออก ↓</div>
+            </div>
+
+            <div class="map-zone">
+              <div class="zone-title">ZONE A · PARKING BAYS</div>
+              <div class="slots" id="rowA"></div>
+            </div>
+
+            <div class="drive-lane">
+              ⇄ &nbsp; DRIVE LANE · ช่องทางเดินรถ &nbsp; ⇄
+            </div>
+
+            <div class="map-zone">
+              <div class="zone-title">ZONE B · PARKING BAYS</div>
+              <div class="slots" id="rowB"></div>
+            </div>
+
+            <div class="drive-lane">
+              ⇄ &nbsp; DRIVE LANE · ช่องทางเดินรถ &nbsp; ⇄
+            </div>
+
+            <div class="map-zone">
+              <div class="zone-title">ZONE C · PARKING BAYS</div>
+              <div class="slots" id="rowC"></div>
+            </div>
+
+            <div class="facilities">
+              <div class="facility">♿ ที่จอดผู้พิการ</div>
+              <div class="facility">⚡ จุดชาร์จ EV</div>
+            </div>
+          </div>
+
+          <div class="note">
+            แผนผังนี้ใช้สำหรับดูสถานะเท่านั้น ไม่สามารถเลือกหรือจองช่องจอดได้
+            <br />สีเขียว = ช่องจอดว่าง · สีแดง = มีรถจอด
+          </div>
+        </section>
+
+        <!-- SYSTEM -->
+        <section class="page" id="system">
+          <div class="eyebrow">SYSTEM INFORMATION</div>
+          <h1>สถานะระบบ</h1>
+          <p class="subtitle">ข้อมูลสถานะการทำงานของระบบ ParkFinder</p>
+
+          <div class="state-grid" style="margin-top: 20px">
+            <div class="state-card">
+              <h3>🟢 ระบบทำงานปกติ</h3>
+              <p>เซ็นเซอร์ส่งข้อมูลสถานะช่องจอดได้ตามปกติ</p>
+              <button
+                class="primary-btn"
+                onclick="
+                  showState(
+                    'ระบบพร้อมใช้งาน',
+                    'สามารถตรวจสอบข้อมูลที่จอดรถได้ตามปกติ',
+                  )
+                "
+              >
+                ดูตัวอย่าง
+              </button>
+            </div>
+
+            <div class="state-card">
+              <h3>🔴 ที่จอดรถเต็ม</h3>
+              <p>ไม่มีช่องจอดว่างในชั้นที่เลือก</p>
+              <button
+                class="primary-btn"
+                onclick="
+                  showState(
+                    'ที่จอดรถเต็มแล้ว',
+                    'กรุณาตรวจสอบชั้นอื่นเพื่อค้นหาที่จอดรถ',
+                  )
+                "
+              >
+                ดูตัวอย่าง
+              </button>
+            </div>
+
+            <div class="state-card">
+              <h3>⏳ กำลังโหลด</h3>
+              <p>ระบบกำลังดึงข้อมูลสถานะช่องจอดล่าสุด</p>
+              <button
+                class="primary-btn"
+                onclick="
+                  showState(
+                    'กำลังโหลดข้อมูล',
+                    'กรุณารอสักครู่ ระบบกำลังอัปเดตข้อมูล',
+                  )
+                "
+              >
+                ดูตัวอย่าง
+              </button>
+            </div>
+
+            <div class="state-card">
+              <h3>⚠ เซ็นเซอร์ขัดข้อง</h3>
+              <p>ไม่สามารถรับข้อมูลสถานะช่องจอดล่าสุดได้</p>
+              <button
+                class="primary-btn"
+                onclick="
+                  showState(
+                    'ไม่สามารถเชื่อมต่อเซ็นเซอร์',
+                    'ข้อมูลสถานะช่องจอดอาจไม่เป็นปัจจุบัน',
+                  )
+                "
+              >
+                ดูตัวอย่าง
+              </button>
+            </div>
+          </div>
+
+          <div class="note" id="systemMessage">
+            เลือกสถานะด้านบนเพื่อดูตัวอย่างการแสดงผล
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <nav class="mobile-nav">
+      <button class="active" data-page="home">⌂<br />ภาพรวม</button>
+      <button data-page="mall">▦<br />ข้อมูลห้าง</button>
+      <button data-page="map">▤<br />แผนผัง</button>
+      <button data-page="system">◉<br />ระบบ</button>
+    </nav>
+
+    <script>
+      const floorData = {
+        B2: { free: 182, busy: 468, total: 650 },
+        B1: { free: 96, busy: 604, total: 700 },
+        "1F": { free: 42, busy: 458, total: 500 },
+        "2F": { free: 34, busy: 566, total: 600 },
+        G: { free: 74, busy: 476, total: 550 },
+      };
+
+      function go(page) {
+        document.querySelectorAll(".page").forEach((p) => {
+          p.classList.toggle("active", p.id === page);
+        });
+
+        document.querySelectorAll("[data-page]").forEach((b) => {
+          b.classList.toggle("active", b.dataset.page === page);
+        });
+
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      document.querySelectorAll("[data-page]").forEach((button) => {
+        button.addEventListener("click", () => go(button.dataset.page));
+      });
+
+      // สร้างรายการชั้นจอดรถ
+      const floorList = document.getElementById("floorList");
+
+      Object.entries(floorData).forEach(([floor, data]) => {
+        floorList.innerHTML += `
+    <div class="floor-row">
+      <div class="floor-code">${floor}</div>
+      <div>
+        <strong>ชั้น ${floor}</strong>
+        <small>ทั้งหมด ${data.total.toLocaleString()} ช่อง</small>
+      </div>
+      <div class="floor-number">${data.free}<small>ช่องว่าง</small></div>
+      <button class="primary-btn" onclick="goToMap('${floor}')">
+        ดูแผนผัง →
+      </button>
+    </div>
+  `;
+      });
+
+      function goToMap(floor) {
+        go("map");
+        setFloor(floor);
+      }
+
+      // เปลี่ยนชั้น
+      function setFloor(floor, button) {
+        const data = floorData[floor];
+
+        document.getElementById("floorTitle").textContent = floor;
+        document.getElementById("freeCount").textContent = data.free;
+        document.getElementById("busyCount").textContent = data.busy;
+        document.getElementById("totalCount").textContent = data.total;
+
+        document.querySelectorAll(".floor-buttons button").forEach((b) => {
+          b.classList.remove("active");
+        });
+
+        if (button) {
+          button.classList.add("active");
+        } else {
+          document.querySelectorAll(".floor-buttons button").forEach((b) => {
+            if (b.textContent === floor) b.classList.add("active");
+          });
+        }
+
+        renderMap(floor);
+      }
+
+      // สร้างช่องจอดรถ
+      function renderMap(floor) {
+        const rows = {
+          A: 8,
+          B: 8,
+          C: 6,
+        };
+
+        Object.entries(rows).forEach(([row, count]) => {
+          const container = document.getElementById("row" + row);
+          container.innerHTML = "";
+
+          for (let i = 1; i <= count; i++) {
+            const id = row + String(i).padStart(2, "0");
+
+            // จำลองสถานะเซ็นเซอร์
+            const occupied = (i + row.charCodeAt(0) + floor.length) % 3 !== 0;
+
+            const slot = document.createElement("div");
+            slot.className = occupied ? "slot occupied" : "slot";
+
+            slot.innerHTML = occupied
+              ? `<span class="car">🚗</span><span>${id}</span>`
+              : `<span style="font-size:18px">✓</span><span>${id}</span>`;
+
+            container.appendChild(slot);
+          }
+        });
+      }
+
+      // ค้นหาห้าง
+      document.getElementById("search").addEventListener("input", function () {
+        const keyword = this.value.toLowerCase();
+
+        document.querySelectorAll(".mall-card").forEach((card) => {
+          const name = card.dataset.name.toLowerCase();
+          card.style.display = name.includes(keyword) ? "" : "none";
+        });
+      });
+
+      // ตัวกรอง
+      document.querySelectorAll("[data-filter]").forEach((button) => {
+        button.addEventListener("click", function () {
+          document.querySelectorAll("[data-filter]").forEach((b) => {
+            b.classList.remove("active");
+          });
+
+          this.classList.add("active");
+
+          const mode = this.dataset.filter;
+          const cards = [...document.querySelectorAll(".mall-card")];
+
+          if (mode === "many") {
+            cards.sort(
+              (a, b) => Number(b.dataset.free) - Number(a.dataset.free),
+            );
+          }
+
+          const grid = document.getElementById("mallGrid");
+          cards.forEach((card) => grid.appendChild(card));
+        });
+      });
+
+      // ตัวอย่างสถานะระบบ
+      function showState(title, description) {
+        document.getElementById("systemMessage").innerHTML =
+          `<strong>${title}</strong><br>${description}`;
+      }
+
+      setFloor("B2");
+    </script>
+  </body>
+</html>
